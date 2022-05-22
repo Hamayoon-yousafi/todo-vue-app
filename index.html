@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Todo List</title>
+</head>
+<body>
+
+    <main id="app">
+        <div class="container mt-5 mb-5">          
+                <div class="input-group input-group-lg">
+                    <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-lg">Write a Todo</span>
+                    </div>
+                    <input type="text" class="form-control" v-model="newTodo.todoItem" placeholder="Type here..." @keyup.enter="addingTodo()">
+                    <button 
+                        id="reset" 
+                        class="btn btn-danger" 
+                        @click="resetInput()" 
+                        v-if="newTodo.todoItem ? true : false">
+                            <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <ul class="list-group">
+                    <li class="list-group-item" :class="{ isDone : todo.isDone }" @click="todo.isDone = !todo.isDone; updateLocalStorage()" v-for="todo in todoList">
+                        {{ todo.todoItem }}
+                        <div>
+                            <button class="btn editBTNs" @click.stop="todo.isBeingEdited = !todo.isBeingEdited; updateLocalStorage(); findToBeUpdatedTodo(); disableEditBTNs()" :disabled="todo.isBeingEdited === true">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button class="btn m-2" @click.stop="todo.isDeleted = !todo.isDeleted; deleteTodo(); updateLocalStorage(); enableEditBTNs()">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <div id="updatePopUp" v-if="todo.isBeingEdited">
+                            <input type="text" class="form-control" v-model="updatedTodo.updatedTodoItem" @click.stop="">
+                            <button class="btn ml-2 btn-dark" @click.stop="todo.isBeingEdited = !todo.isBeingEdited" @click="updateTodo(); updateLocalStorage(); enableEditBTNs()">Update</button>
+                        </div>
+                    </li>
+                </ul>
+
+                <button 
+                class="btn btn-primary btn-lg btn-block mt-2" 
+                @click="addingTodo()" 
+                :disabled="newTodo.todoItem ? false : true"
+                >Save 
+                    <span class="ml-1">
+                      <i class="far fa-clipboard"></i>
+                    </span>
+                </button>
+
+                <button 
+                class="btn btn-danger btn-lg btn-block" 
+                @click="todoList = []; updateLocalStorage()" 
+                :disabled="todoList.length > 0 ? false : true"
+                >Clear All 
+                    <span class="ml-1">
+                      <i class="fas fa-times-circle"></i>
+                    </span>
+                </button>
+        </div>    
+    </main>
+
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="script.js"></script>
+</body>
+</html>
